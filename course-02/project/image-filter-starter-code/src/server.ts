@@ -26,7 +26,30 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   //    image_url: URL of a publicly accessible image
   // RETURNS
   //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
+  app.get("/filteredimage", (req: any, res: any) => {
 
+    const { image_url }: { image_url: string } = req.query;
+    // check to make sure the image_url is set
+    if (!image_url) {
+      // respond with an error if not
+      res.status(400).send(`Image url is required`);
+     // return;
+    }
+
+    // Get Filtered image
+    const promiseImage: Promise<string> = filterImageFromURL(image_url);
+
+    promiseImage.then(filteredImage => {
+      //return the filtered image with a sucess status code
+      res.status(200).sendFile(filteredImage, () => {
+        const imagesToBeDeleted: Array<string> = new Array(filteredImage);
+        deleteLocalFiles(imagesToBeDeleted);
+      });
+    }).catch(error => {
+      res.status(404).send({ message: "filtered image not found" });
+      //return;
+    })
+  });
   /**************************************************************************** */
 
   //! END @TODO1
@@ -34,7 +57,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   // Root Endpoint
   // Displays a simple message to the user
   app.get( "/", async ( req, res ) => {
-    res.send("try GET /filteredimage?image_url={{}}")
+    res.send("try2 GET /filteredimage?image_url={{}}")
   } );
   
 
