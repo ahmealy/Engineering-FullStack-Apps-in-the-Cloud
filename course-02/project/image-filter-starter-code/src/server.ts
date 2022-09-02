@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
@@ -26,14 +26,13 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   //    image_url: URL of a publicly accessible image
   // RETURNS
   //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
-  app.get("/filteredimage", (req: any, res: any) => {
+  app.get("/filteredimage", (req: Request, res: Response) => {
 
     const { image_url }: { image_url: string } = req.query;
     // check to make sure the image_url is set
     if (!image_url) {
       // respond with an error if not
       res.status(400).send(`Image url is required`);
-     // return;
     }
 
     // Get Filtered image
@@ -47,19 +46,18 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
       });
     }).catch(error => {
       res.status(404).send({ message: "filtered image not found" });
-      //return;
     })
   });
   /**************************************************************************** */
 
   //! END @TODO1
-  
+
   // Root Endpoint
   // Displays a simple message to the user
   app.get( "/", async ( req, res ) => {
-    res.send("try2 GET /filteredimage?image_url={{}}")
+    res.send("try GET /filteredimage?image_url={{}}")
   } );
-  
+
 
   // Start the Server
   app.listen( port, () => {
